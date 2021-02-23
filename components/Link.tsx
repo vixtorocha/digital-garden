@@ -1,8 +1,8 @@
 import React from "react";
 import NextLink from "next/link";
 
-const Link = ({ children }, href: string) => {
-  const link = href;
+const Link = (props: { children: any; href: string }) => {
+  const link = props.href;
 
   function isExternal() {
     return true;
@@ -11,9 +11,9 @@ const Link = ({ children }, href: string) => {
   return (
     <span className="text-green-400 hover:text-green-300">
       {isExternal ? (
-        <a href={link}>{children}</a>
+        <a href={link}>{props.children}</a>
       ) : (
-        <NextLink href={link}>{children}</NextLink>
+        <NextLink href={link}>{props.children}</NextLink>
       )}
     </span>
   );
