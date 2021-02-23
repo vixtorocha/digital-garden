@@ -1,4 +1,12 @@
+import React from "react";
+import Link from "components/Link";
+
 const Header = () => {
-  return <div>João Victor Rocha</div>;
+  return (
+    <div className="py-5 md:py-10 xl:py-14 flex justify-between">
+      <div>João Victor Rocha</div>
+      <Link href="https://github.com/vixtorocha">Github</Link>
+    </div>
+  );
 };
 export default Header;
