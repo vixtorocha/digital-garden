@@ -8,11 +8,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex justify-center items-center">
-        <h1 className="text-red-500">
+      <main className="">
+        <p>
           Hi! I'm João Victor Rocha, I'm a Software Engineer currently studying
-          at UFG (Goiânia, Brazil)
-        </h1>
+          at the Federal University of Goiás (UFG) - Goiânia, Brazil
+        </p>
       </main>
     </div>
   );
