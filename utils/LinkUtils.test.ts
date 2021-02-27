@@ -4,6 +4,10 @@ test("Local link", () => {
   expect(isExternal("/")).toBe(false);
 });
 
-test("External link", () => {
-  expect(isExternal("https://github.com/vixtorocha")).toBe(true);
+test("External https link", () => {
+  expect(isExternal("https://google.com")).toBe(true);
+});
+
+test("External http link", () => {
+  expect(isExternal("http://google.com")).toBe(true);
 });
