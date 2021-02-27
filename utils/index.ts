@@ -1,0 +1,1 @@
+export { isExternal } from "./LinkUtils";
