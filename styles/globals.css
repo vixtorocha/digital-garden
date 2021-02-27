@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-yellow-50 text-gray-800;
+    @apply bg-white text-gray-800;
   }
   h1 {
     @apply text-xl font-bold;
