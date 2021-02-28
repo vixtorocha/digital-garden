@@ -6,7 +6,7 @@ const Link = (props: { children: any; href: string }) => {
   const link = props.href;
 
   return (
-    <span className="text-yellow-500 hover:text-yellow-400">
+    <span className="text-yellow-400 hover:text-yellow-300 font-medium">
       {isExternal(link) ? (
         <a href={link} target="_blank" rel="noreferrer">
           {props.children}

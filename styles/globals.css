@@ -6,6 +6,9 @@
   body {
     @apply bg-white text-gray-800 text-lg;
   }
+  ::selection {
+    @apply bg-yellow-400 text-white;
+  }
   h1 {
     @apply text-xl font-bold;
   }
