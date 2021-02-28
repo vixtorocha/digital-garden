@@ -4,9 +4,13 @@
 
 @layer base {
   body {
-    @apply bg-white text-gray-800;
+    @apply bg-white text-gray-800 text-lg;
   }
   h1 {
     @apply text-xl font-bold;
   }
+}
+
+body {
+  font-family: "Poppins", sans-serif;
 }
