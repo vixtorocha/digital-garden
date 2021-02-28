@@ -11,3 +11,7 @@ test("External https link", () => {
 test("External http link", () => {
   expect(isExternal("http://google.com")).toBe(true);
 });
+
+test("Mail to", () => {
+  expect(isExternal("mailto:mail@exemple.com")).toBe(true);
+});
