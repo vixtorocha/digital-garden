@@ -12,8 +12,8 @@ export default function Home() {
       <main className="">
         <p>Olá!!!</p>
         <p>
-          Meu nome é João Victor Rocha e eu sou estudante de Engenharia de
-          Software na{" "}
+          Meu nome é João Victor Rocha e eu sou um Engenheiro de
+          Software formado pela{" "}
           <Link href="https://www.ufg.br/">Universidade Federal de Goiás</Link>.
         </p>
         <p>
