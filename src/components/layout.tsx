@@ -1,6 +1,10 @@
 import React from "react";
 
-const Layout = ({ children }) => {
-  return <div className="px-5 md:px-10 lg:max-w-4xl mx-auto">{children}</div>;
+type LayoutProps = {
+    children: React.ReactNode;
+};
+
+const Layout = ({ children }: LayoutProps) => {
+    return <div className="px-5 md:px-10 lg:max-w-4xl mx-auto">{children}</div>;
 };
 export default Layout;
