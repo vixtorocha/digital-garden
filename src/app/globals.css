@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   body {
@@ -12,8 +10,4 @@
   h1 {
     @apply text-xl font-bold;
   }
-}
-
-body {
-  font-family: "Poppins", sans-serif;
 }
