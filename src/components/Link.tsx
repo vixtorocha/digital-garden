@@ -1,6 +1,6 @@
 import React from "react";
 import NextLink from "next/link";
-import { isExternal } from "utils";
+import { isExternal } from "util/types";
 
 const Link = (props: { children: any; href: string }) => {
   const link = props.href;
