@@ -1,26 +1,49 @@
-import Link from '@/components/Link';
-import Head from 'next/head';
+import fs from "fs"; // File system module to read files
+import path from "path"; // Path module to handle file paths
+import matter from "gray-matter"; // Library to parse Markdown front matter
 
-export default function Home() {
-    return (
-        <div>
-            <Head>
-                <title>João Victor Rocha</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
+type FrontMatter = {
+  title: string;
+  date: string;
+};
 
-            <main className="">
-                <p>Olá!!!</p>
-                <p>
-                    Meu nome é João Victor Rocha e eu sou um Engenheiro de Software formado pela{' '}
-                    <Link href="https://www.ufg.br/">Universidade Federal de Goiás</Link>.
-                </p>
-                <p>
-                    Você pode me encontrar no <Link href="https://twitter.com/vixtorocha">Twitter</Link>, no{' '}
-                    <Link href="https://www.linkedin.com/in/vixtorocha/">LinkedIn</Link> e ver meus projetos no{' '}
-                    <Link href="https://github.com/vixtorocha">Github</Link>.
-                </p>
-            </main>
-        </div>
+type Post = {
+  slug: string;
+  data: FrontMatter;
+};
+
+async function getPosts(): Promise<Post[]> {
+  const files = fs.readdirSync(path.join("src/posts"));
+  return files.map((filename) => {
+    const slug = filename.replace(".mdx", "");
+    const markdownWithMeta = fs.readFileSync(
+      path.join("src/posts", filename),
+      "utf-8"
     );
+    const { data } = matter(markdownWithMeta);
+    return { slug, data: data as FrontMatter };
+  });
+}
+
+export default async function Home() {
+  const posts = await getPosts();
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-8">My Blog</h1>
+      <ul>
+        {posts.map((post: Post, index: number) => (
+          <li key={index} className="mb-6">
+            <a
+              href={`/blog/${post.slug}`}
+              className="text-blue-500 hover:underline"
+            >
+              <h2 className="text-xl font-semibold">{post.data.title}</h2>
+            </a>
+            <p className="text-gray-600">{post.data.date}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
