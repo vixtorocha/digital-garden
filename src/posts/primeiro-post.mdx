@@ -1,10 +1,98 @@
 ---
-title: "Meu Primeiro Post"
-date: "2025-09-17"
+title: "O estado atual dos web apps."
+date: "2025-11-07"
 ---
 
-# Bem-vindo ao Meu Blog
+# O estado atual dos web apps
 
-Este é o meu primeiro post escrito em **MDX**! O MDX permite que você escreva Markdown enquanto incorpora componentes React para conteúdo dinâmico.
+## Estado atual dos PWAs no Android e iOS
 
-Não é incrível?
+Progressive Web Apps (PWAs) são sites que usam melhorias progressivas. Isso proporciona uma experiência parecida com a de um aplicativo. Isso significa que eles são uma evolução híbrida entre páginas web e aplicativos.
+
+Os PWAs combinam a flexibilidade da web com funcionalidades típicas de apps nativos (instalação, notificações, offline etc.).
+
+Em 2025, o suporte a PWAs melhorou muito. Navegadores modernos no Android já têm quase todas as APIs necessárias. No iOS, avanços recentes, como o suporte a push notifications no iOS 16.4, diminuíram as limitações do Safari. No desktop, você pode instalar essas aplicações pelo ícone de instalação no Chrome ou no Edge. Elas funcionam em uma janela própria e podem ser acessadas pelo menu Iniciar.
+
+No desktop, o Firefox ainda não suporta PWAs.
+
+Neste artigo, explico as funções disponíveis no Android e no iOS. Também abordo as principais diferenças, limitações, casos de uso recomendados e tendências futuras.
+
+## Funcionalidades suportadas em PWAs
+
+**Instalação / Tela inicial**: O Android facilita a instalação. Navegadores Chromium mostram um banner "Adicionar à tela inicial" automaticamente. Já no iOS, a instalação passa despercebida pelos usuários, e esse é o maior ponto fraco.
+
+No iOS, o usuário deve usar manualmente o menu “Compartilhar → Adicionar à Tela de Início” no Safari.
+
+No Android, é comum empacotar PWAs em formatos nativos (APK/AAB) usando Trusted Web Activity para publicar no Google Play. Mas, no iOS, não há suporte nativo para listar PWAs na App Store.
+
+**Notificações push:** Android e iOS suportam notificações.
+
+O Android/Chrome tem suporte a web push nativo há bastante tempo. Isso permite usar o Firebase Cloud Messaging ou APIs padrão para enviar alertas em segundo plano. No iOS, o suporte a push só foi introduzido a partir do iOS 16.4 (março de 2023) e há restrições.
+
+Para que as notificações cheguem no iOS, a aplicação deve estar instalada na tela inicial e ter iOS acima de 16.4. Mesmo permitindo push, o Safari não exibe badges de notificação no ícone do PWA.
+
+**Offline / Cache (Service Workers):** Ambos os sistemas permitem o uso de Service Workers para cache offline e recarregamento de recursos. O Safari no iOS tem um limite de armazenamento de cerca de 50 MB para arquivos offline. Além disso, ele pode limpar o cache de forma mais agressiva em segundo plano.
+
+O Android/Chrome não possui essa restrição severa, permitindo maior uso do IndexedDB e do Cache Storage.
+
+**APIs de sistema (câmera, localização etc.):** Ambos suportam APIs web padrão: geolocalização, câmera/microfone, sensores de movimento, Payment Request API (pagamentos simplificados), entre outros.
+
+O Android geralmente suporta mais APIs experimentais. Por exemplo, Web Bluetooth e Web NFC funcionam no Android, mas não estão disponíveis no iOS.
+
+O Safari realmente limita o acesso a recursos nativos. PWAs em iOS **não podem usar**:
+
+- Face ID/Touch ID
+- ARKit/ARCore (realidade aumentada)
+- Bluetooth
+- NFC
+- Web APIs
+- Siri
+
+## Casos de uso (e quando não usar PWAs)
+
+PWAs são uma boa escolha quando se quer atingir muitos usuários em diferentes plataformas. Elas são também mais baratas de desenvolver, mas têm algumas limitações.
+
+Típicos cenários incluem:
+
+- Portais de conteúdo
+- Lojas online
+- Blogs
+- Sites institucionais
+
+Esses devem funcionar bem em redes lentas e permitir reengajamento, como notificações e ícone na home.
+
+PWAs são muito úteis em mercados emergentes. Elas funcionam bem em dispositivos antigos ou limitados, pois evitam instalações pesadas.
+
+Já não se recomenda PWA quando recursos nativos avançados são essenciais.
+
+## iOS 17.4 e o que isso nos ensina
+
+Em 2024, a União Europeia obrigou a Apple a abrir seu sistema operacional móvel para diferentes motores de navegador. Isso significava que navegadores concorrentes poderiam finalmente usar seus próprios motores de renderização no iOS, em vez de ficarem limitados ao WebKit.
+
+O iOS tem limites de segurança rígidos baseados no WebKit. Por isso, seria necessária uma nova arquitetura para o iOS oferecer suporte total a PWAs com motores alternativos.
+
+A Apple decidiu não investir em uma nova arquitetura. Em vez disso, planejou remover a funcionalidade de PWAs na União Europeia. A empresa citou preocupações com privacidade e segurança. Mas, após pressão de desenvolvedores e reguladores, a Apple acabou restaurando o recurso, restringindo-o apenas ao WebKit. Isso representou um golpe significativo na confiança no futuro das PWAs.
+
+## Tendências recentes e expectativas futuras
+
+O suporte a PWAs continua evoluindo. No Android, a tecnologia é madura: navegadores Chrome, Edge e outros já oferecem quase todas as APIs relevantes.
+
+No iOS, importantes avanços ocorreram recentemente: além do push em iOS 16.4, o Safari 16/X (iOS 17) ampliou a capacidade de cache e interface. O episódio do iOS 17.4 na União Europeia ressalta que as capacidades do PWA serão objeto de atenção regulatória e de segurança.
+
+Novas APIs web devem surgir, como WebXR (realidade estendida) e WebGPU (gráficos acelerados). Essas tecnologias podem trazer recursos antes limitados a apps nativos. Ferramentas como PWABuilder, Capacitor e Trusted Web Activities tornam mais fácil empacotar PWAs para lojas.
+
+A tendência geral é um aprimoramento gradual no Safari, com mais compatibilidade com padrões web. Além disso, as PWAs estão se espalhando no mercado, tanto em dispositivos móveis quanto em desktop. O Windows e o Chrome OS já integram PWAs.
+
+Empresas estão atentas a essa mudança. A adoção de PWAs aumentou com grandes nomes como Twitter, Pinterest e Starbucks. Além disso, novas expectativas, como o uso de WebAssembly para desempenho quase nativo, são empolgantes.
+
+Contudo, como destacou a Apple, questões de segurança e privacidade podem continuar impondo limites técnicos no iOS.
+
+## Opinião
+
+No iOS, os PWAs ainda enfrentam desvantagens em relação aos aplicativos nativos. A falta de integração com a App Store remove um dos principais jeitos de descobrir aplicativos na Apple. Além disso, o fluxo de instalação no Safari, que não tem prompts automáticos e depende de ações manuais desconhecidas, reduz muito a taxa de adoção orgânica.
+
+Apesar dos avanços recentes, como o suporte a Web Push, os PWAs ainda não têm a mesma experiência nativa. A Apple ainda impõe limitações em APIs, armazenamento, execução em segundo plano e integração com o sistema. Essas decisões, baseadas em segurança, afetam o mercado. Assim, os PWAs tornam-se menos competitivos no iPhone.
+
+**Apostar apenas em PWA como o principal produto para usuários iOS é arriscado**. A decisão deve se basear em métricas de uso, público-alvo e integração nativa.
+
+Fontes: [https://web.dev/learn/pwa/progressive-web-app](https://web.dev/learn/pwa/progressive-web-app)
