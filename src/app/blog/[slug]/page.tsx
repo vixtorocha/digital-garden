@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default async function BlogPostPage({ params }: Props) {
-  const slug = await params.slug;
+  const { slug } = await params;
   const markdownWithMeta = fs.readFileSync(
     path.join("src/posts", `${slug}.mdx`),
     "utf-8"

@@ -5,9 +5,24 @@
     @apply bg-white text-gray-800 text-lg;
   }
   ::selection {
-    @apply bg-yellow-400 text-white;
+    @apply bg-yellow-500 text-white;
   }
   h1 {
     @apply text-xl font-bold;
+  }
+  h2 {
+    @apply text-2xl font-medium mb-5 mt-9 text-yellow-500;
+  }
+  h3 {
+    @apply text-xl font-semibold mb-4;
+  }
+  p {
+    @apply mb-4 leading-relaxed;
+  }
+  li {
+    @apply mb-2 list-disc list-inside;
+  }
+  ul {
+    @apply mb-4 pl-5;
   }
 }

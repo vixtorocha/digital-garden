@@ -10,7 +10,7 @@ type LinkProps = {
 
 const Link = ({ children, href, className }: LinkProps) => {
   const link = href;
-  const baseClass = "text-yellow-400 hover:text-yellow-300 font-medium";
+  const baseClass = "text-yellow-500 hover:text-yellow-300 font-medium";
   const combinedClass = className ? `${baseClass} ${className}` : baseClass;
 
   return (
