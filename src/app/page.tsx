@@ -30,20 +30,22 @@ export default async function Home() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-8">My Blog</h1>
-      <ul>
+      <h1 className="text-2xl font-bold mb-8">Blog</h1>
+      <div>
         {posts.map((post: Post, index: number) => (
-          <li key={index} className="mb-6">
+          <div key={index} className="mb-4">
             <a
               href={`/blog/${post.slug}`}
-              className="text-blue-500 hover:underline"
+              className="hover:underline mb-0 block decoration-yellow-500 decoration-2"
             >
-              <h2 className="text-xl font-semibold">{post.data.title}</h2>
+              <h2 className="text-xl mb-0 mt-0 font-semibold">
+                {post.data.title}
+              </h2>
             </a>
             <p className="text-gray-600">{post.data.date}</p>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

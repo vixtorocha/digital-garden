@@ -25,17 +25,23 @@ No iOS, o usuário deve usar manualmente o menu “Compartilhar → Adicionar à
 
 No Android, é comum empacotar PWAs em formatos nativos (APK/AAB) usando Trusted Web Activity para publicar no Google Play. Mas, no iOS, não há suporte nativo para listar PWAs na App Store.
 
-**Notificações push:** Android e iOS suportam notificações.
+### Notificações push
+
+Android e iOS suportam notificações.
 
 O Android/Chrome tem suporte a web push nativo há bastante tempo. Isso permite usar o Firebase Cloud Messaging ou APIs padrão para enviar alertas em segundo plano. No iOS, o suporte a push só foi introduzido a partir do iOS 16.4 (março de 2023) e há restrições.
 
 Para que as notificações cheguem no iOS, a aplicação deve estar instalada na tela inicial e ter iOS acima de 16.4. Mesmo permitindo push, o Safari não exibe badges de notificação no ícone do PWA.
 
-**Offline / Cache (Service Workers):** Ambos os sistemas permitem o uso de Service Workers para cache offline e recarregamento de recursos. O Safari no iOS tem um limite de armazenamento de cerca de 50 MB para arquivos offline. Além disso, ele pode limpar o cache de forma mais agressiva em segundo plano.
+### Offline / Cache (Service Workers):
+
+Ambos os sistemas permitem o uso de Service Workers para cache offline e recarregamento de recursos. O Safari no iOS tem um limite de armazenamento de cerca de 50 MB para arquivos offline. Além disso, ele pode limpar o cache de forma mais agressiva em segundo plano.
 
 O Android/Chrome não possui essa restrição severa, permitindo maior uso do IndexedDB e do Cache Storage.
 
-**APIs de sistema (câmera, localização etc.):** Ambos suportam APIs web padrão: geolocalização, câmera/microfone, sensores de movimento, Payment Request API (pagamentos simplificados), entre outros.
+### APIs de sistema
+
+Ambos suportam APIs web padrão: geolocalização, câmera/microfone, sensores de movimento, Payment Request API (pagamentos simplificados), entre outros.
 
 O Android geralmente suporta mais APIs experimentais. Por exemplo, Web Bluetooth e Web NFC funcionam no Android, mas não estão disponíveis no iOS.
 

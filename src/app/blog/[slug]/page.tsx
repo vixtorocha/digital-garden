@@ -21,7 +21,7 @@ export default async function BlogPostPage({ params }: Props) {
     <div>
       <h1 className="text-4xl font-bold mb-4">{data.title}</h1>
       <p className="text-gray-600 mb-8">{data.date}</p>
-      <article className="prose lg:prose-xl dark:prose-invert">
+      <article className="mdx prose lg:prose-xl dark:prose-invert">
         <MDXRemote {...mdxSource} source={content} />
       </article>
     </div>
