@@ -1,0 +1,46 @@
+---
+title: "Quando usar Apache Kafka?"
+date: "2025-11-14"
+---
+
+Imagine o seguinte cenário: você é desenvolvedor de um e-commerce que recebe milhares de pedidos por hora; isso significa orquestrar eventos de pedidos, pagamentos, atualização de estoque e notificações. A **mensageria** brilharia nesse cenário, onde há muitos eventos chegando em tempo real e múltiplos sistemas que precisam processá-los de forma assíncrona.
+
+Em ambientes com muitos sensores, como fazendas inteligentes, fábricas ou redes de equipamentos médicos, dispositivos de IoT (Internet das Coisas) enviam medições constantes, permitindo que outros dispositivos reajam a esses dados.
+
+Exemplo: um sensor mede a umidade, temperatura e luminosidade em um determinado ponto da plantação, envia essas informações a um message broker (como o Kafka), e a partir daí o serviço de irrigação lê os dados da umidade do solo e decide se precisa ligar os aspersores naquele local.
+
+## Mensageria
+
+Mensageria é uma forma na qual diversos sistemas podem trocar informações entre si sem um serviço chamar diretamente o outro. Eles se comunicam enviando e recebendo mensagens por meio de um intermédio, como o Kafka, RabbitMQ, etc.
+
+A mensageria ajuda a resolver vários problemas comuns em sistemas modernos:
+
+- Desacoplar serviços: garante que os microsserviços se comuniquem sem gerar acoplamento.
+- Processar tarefas de forma assíncrona: A operação pode ocorrer em segundo plano, sem bloquear o usuário.
+- Distribuir trabalho entre vários consumidores.
+- Tornar o sistema mais resiliente: se um serviço cair, as mensagens ficam guardadas e serão processadas quando ele voltar.
+
+## Apache Kafka
+
+O Apache Kafka é um sistema open source de mensageria que armazena streams de dados de forma durável, ordenada e distribuída. Com ele, é possível criar sistemas que coletam logs, acompanham a atividade de usuários e integram diversos componentes de forma resiliente.
+
+É justamente aí que o Kafka se diferencia da maioria. Em muitos brokers tradicionais, como o RabbitMQ, ActiveMQ e SQS, a mensagem costuma sumir depois que um consumidor lê e confirma o processamento.
+
+### Vantagens
+
+- Aguenta alto volume de mensagens.
+- Processamento em tempo real.
+- Durabilidade e tolerância a falhas.
+- Durabilidade dos dados. Ideal para múltiplos consumidores.
+
+### Desvantagens
+
+- Overkill quando há baixo volume de dados (menos de 1.000 mensagens por segundo).
+- Complexidade de configuração e operação.
+- Custo de manutenção e de especialistas.
+- Alta curva de aprendizado.
+
+Para cargas menores ou padrões mais simples de mensageria, ferramentas como RabbitMQ ou até mesmo filas em nuvem podem ser mais práticas.
+
+Fontes:
+https://hadoop.com.br/tecnologias/streaming/apache-kafka
