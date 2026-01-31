@@ -1,0 +1,15 @@
+{
+  "about": {
+    "hi": "Olá!!!",
+    "myName": "Meu nome é João Victor Rocha e eu sou um Engenheiro de Software formado pela",
+    "univesityName": "Universidade Federal de Goiás",
+    "findMe": "Você pode me encontrar no",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "github": "Github",
+    "projects": "e ver meus projetos no"
+  },
+  "header": {
+    "about": "Sobre mim"
+  }
+}

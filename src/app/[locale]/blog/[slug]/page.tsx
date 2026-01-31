@@ -3,15 +3,17 @@ import path from "path";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { getLocale } from "next-intl/server";
 
 type Props = {
   readonly params: { readonly slug: string };
 };
 
 export default async function BlogPostPage({ params }: Props) {
+  const locale = await getLocale();
   const { slug } = await params;
   const markdownWithMeta = fs.readFileSync(
-    path.join("src/posts", `${slug}.mdx`),
+    path.join("src/posts", `${locale}/${slug}.mdx`),
     "utf-8"
   );
   const { data, content } = matter(markdownWithMeta);

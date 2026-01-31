@@ -1,0 +1,46 @@
+---
+title: "When to choose Apache Kafka?"
+date: "2025-11-14"
+---
+
+Imagine the following scenario: you are an e-commerce developer handling thousands of orders per hour. That means orchestrating order events, payments, inventory updates, and notifications. **Messaging** truly shines in this kind of scenario, where many events arrive in real time and multiple systems need to process them asynchronously.
+
+In environments with many sensors, such as smart farms, factories, or networks of medical equipment, IoT devices continuously send measurements, allowing other devices to react to that data.
+
+Example: a sensor measures humidity, temperature, and light at a specific point in a plantation, sends this information to a message broker (such as Kafka), and from there the irrigation service reads the soil moisture data and decides whether it needs to turn on the sprinklers in that location.
+
+## Messaging
+
+Messaging is a way for multiple systems to exchange information without one service directly calling another. They communicate by sending and receiving messages through an intermediary, such as Kafka, RabbitMQ, etc.
+
+Messaging helps solve several common problems in modern systems:
+
+* **Decoupling services:** ensures that microservices communicate without creating tight coupling.
+* **Asynchronous task processing:** operations can run in the background without blocking the user.
+* **Distributing work across multiple consumers.**
+* **Improving system resilience:** if a service goes down, messages are retained and will be processed when it comes back up.
+
+## Apache Kafka
+
+Apache Kafka is an open-source messaging system that stores data streams in a durable, ordered, and distributed manner. With it, you can build systems that collect logs, track user activity, and integrate multiple components in a resilient way.
+
+This is precisely where Kafka stands apart from most others. In many traditional brokers—such as RabbitMQ, ActiveMQ, and SQS—the message typically disappears after a consumer reads it and acknowledges processing.
+
+### Advantages
+
+* Handles a high volume of messages.
+* Real-time processing.
+* Fault tolerance and durability.
+* Data retention, making it ideal for multiple consumers.
+
+### Disadvantages
+
+* Overkill for low data volumes (less than 1,000 messages per second).
+* Configuration and operational complexity.
+* High maintenance and specialist costs.
+* Steep learning curve.
+
+For smaller workloads or simpler messaging patterns, tools like RabbitMQ or even cloud-based queues may be more practical.
+
+Sources:
+[https://hadoop.com.br/tecnologias/streaming/apache-kafka](https://hadoop.com.br/tecnologias/streaming/apache-kafka)

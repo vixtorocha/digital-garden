@@ -1,6 +1,7 @@
 import fs from "fs"; // File system module to read files
 import path from "path"; // Path module to handle file paths
-import matter from "gray-matter"; // Library to parse Markdown front matter
+import matter from "gray-matter";
+import { getLocale } from "next-intl/server";
 
 type FrontMatter = {
   title: string;
@@ -12,12 +13,18 @@ type Post = {
   data: FrontMatter;
 };
 
-async function getPosts(): Promise<Post[]> {
-  const files = fs.readdirSync(path.join("src/posts"));
+async function getPosts(locale: string): Promise<Post[]> {
+  const postsPath = path.join("src/posts", locale); // Include locale in the path
+
+  if (!fs.existsSync(postsPath)) {
+    return []; // Return an empty array if the locale folder doesn't exist
+  }
+
+  const files = fs.readdirSync(postsPath);
   return files.map((filename) => {
     const slug = filename.replace(".mdx", "");
     const markdownWithMeta = fs.readFileSync(
-      path.join("src/posts", filename),
+      path.join(postsPath, filename),
       "utf-8"
     );
     const { data } = matter(markdownWithMeta);
@@ -26,14 +33,15 @@ async function getPosts(): Promise<Post[]> {
 }
 
 export default async function Home() {
-  const posts = await getPosts();
+  const locale = await getLocale();
+  const posts = await getPosts(locale);
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-8">Blog</h1>
       <div>
-        {posts.map((post: Post, index: number) => (
-          <div key={index} className="mb-4">
+        {posts.map((post: Post) => (
+          <div key={post.slug} className="mb-4">
             <a
               href={`/blog/${post.slug}`}
               className="hover:underline mb-0 block decoration-yellow-500 decoration-2"

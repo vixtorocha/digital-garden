@@ -1,0 +1,18 @@
+{
+  "about": {
+    "hi": "Hi!!!",
+    "myName": "My name is João Victor Rocha and I'm a Software Engineer graduate from the",
+    "univesityName": "Federal University of Goiás",
+    "findMe": "You can find me on",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "github": "Github",
+    "projects": "and check out my projects on"
+  },
+  "header": {
+    "home": "Home",
+    "about": "About me",
+    "projects": "Projects",
+    "contact": "Contact"
+  }
+}

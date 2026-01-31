@@ -1,15 +1,18 @@
 import createMDX from "@next/mdx";
+import createNextIntlPlugin from "next-intl/plugin";
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configure `pageExtensions` to include markdown and MDX files
-  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
-  // Optionally, add any other Next.js config below
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"]
+  // Outras configurações do Next.js podem ser adicionadas aqui
 };
 
 const withMDX = createMDX({
-  // Add markdown plugins here, as desired
+  // Adicione plugins de markdown aqui, se necessário
 });
 
-// Merge MDX config with Next.js config
-export default withMDX(nextConfig);
+const withNextIntl = createNextIntlPlugin(
+  // Configurações opcionais do next-intl podem ser adicionadas aqui
+);
+
+// Combine as configurações do MDX e do next-intl com o Next.js
+export default withNextIntl(withMDX(nextConfig));
