@@ -1,0 +1,108 @@
+---
+title: "Discovering PostgreSQL: why do so many developers love this database?"
+date: "2026-02-03"
+---
+
+Imagine you have already done that basic CRUD you always do in PostgreSQL: create table, insert data, select everything with a `SELECT *`… But what now? How do you get the most out of your database and take your app to the next level? PostgreSQL can be a Swiss Army knife of advanced features.
+In this article we will see how features like Common Table Expressions, specialized indexes, JSONB, and extensions shape Postgres’s reputation as a community favorite.
+
+---
+
+## Advanced queries with Common Table Expressions and powerful SQL
+
+Have you ever been surprised when a simple query turned into a puzzle? In PostgreSQL, you can split a query into readable pieces using Common Table Expressions (CTEs).
+Want a practical example? Imagine an online store where you need to know which customers sold more than R$10,000 in January. Instead of stacking confusing subselects, you can use:
+
+```
+WITH total_vendas AS (
+  SELECT cliente_id, SUM(valor) AS total
+  FROM pedidos
+  WHERE data_pedido BETWEEN '2025-01-01' AND '2025-01-31'
+  GROUP BY cliente_id
+)
+
+SELECT c.nome, tv.total
+FROM total_vendas tv
+JOIN clientes c ON c.id = tv.cliente_id
+WHERE tv.total > 10000;
+```
+
+This `WITH` makes the logic clearer: first we calculate total sales per customer, then we filter and join with the customers table. On top of that, Postgres supports recursive queries via `WITH RECURSIVE` for hierarchies like category trees or org charts, without ugly hacks.
+
+Another strong point of Postgres SQL is its flexibility with semi-structured data. You can store JSON fields directly in a table using the JSONB type and still query everything naturally. For example, suppose the `clientes` table has a column `info` of type `jsonb` with details like city or preferences:
+
+```
+SELECT info->>'nome' AS nome,
+       info->'endereco'->>'cidade' AS cidade
+FROM clientes
+WHERE info->>'ativo' = 'true';
+```
+
+Notice how we use the `->>` operator to extract text and `->` for JSON objects. With proper GIN indexes, even JSONB queries become very fast. This makes Postgres an interesting option when you want to mix a relational model with flexible documents, without losing the power of SQL queries.
+
+## Specialized indexes and performance
+
+You probably know how a simple index speeds up searches in basic CRUDs, but Postgres goes far beyond the standard B-tree index. It offers specialized index types for each need: GIN indexes, great for text, arrays, and JSONB; GiST, ideal for geometric data and full-text search; BRIN, for very large tables grouped by page ranges; and even partial indexes to optimize common queries. For example, if your `produtos` table is huge and you mostly access active products, you can create a partial index like this:
+
+```
+CREATE INDEX idx_produtos_ativos ON produtos(id)
+WHERE ativo = true;
+```
+
+This way, the index is smaller and optimized for frequent queries, improving performance. There are also specific indexes for full-text search and many other strategies. In short, if a query in Postgres is slow, a well-placed index almost always fixes the problem. This is something many developers discover as they explore the database’s potential.
+
+## Powerful extensions: PostGIS, pg_stat_statements, and much more
+
+One of PostgreSQL’s biggest advantages is its extensibility. With a simple `CREATE EXTENSION`, you can enable impressive features. For example, the famous [PostGIS](https://postgis.net/) extension adds support for geographic data. If you need to find stores near a customer, you just use geometric types and native functions:
+
+```
+SELECT nome_loja
+FROM lojas
+WHERE ST_DWithin(
+  geoloc::geography,
+  ST_SetSRID(ST_MakePoint(-46.6333, -23.5505), 4326)::geography,
+  5000
+);
+```
+
+This example returns stores within 5 km of a given point in São Paulo. Without leaving SQL, you can calculate distances, areas, buffers, and much more for maps and location-based applications.
+
+Another very useful extension is `pg_stat_statements`, which monitors your query performance in real time. Enable it with:
+
+```
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+```
+
+Then you can query it, for example:
+
+```
+SELECT query, calls, total_time
+FROM pg_stat_statements
+ORDER BY total_time DESC
+LIMIT 5;
+```
+
+This shows which queries are consuming the most time, helping you optimize your database with little effort. There are extensions for almost everything: data versioning, encryption with `pgcrypto`, even advanced replication procedures like BDR and Citus, and procedural languages like PL/pgSQL, PL/Python, PL/Perl, and others. The Postgres ecosystem is huge, and there is practically no limit to what you can add.
+
+## Robustness, ACID, and production performance
+
+Beyond all these features, many people choose PostgreSQL for its reliability in critical environments. Postgres has always been ACID by default: it guarantees Atomicity, Consistency, Isolation, and Durability. In practice, your transactions work as all or nothing. For example:
+
+```
+BEGIN;
+UPDATE contas SET saldo = saldo - 100 WHERE id = 1;
+UPDATE contas SET saldo = saldo + 100 WHERE id = 2;
+COMMIT;
+```
+
+If something fails in the middle, the database rolls everything back, avoiding inconsistent data. PostgreSQL also uses MVCC (Multiversion Concurrency Control), so reads do not block writes. This means you can have many transactions running at the same time without fighting heavy locks, keeping the database fast and consistent. On top of that, there are native replication features, point-in-time recovery, and Write-Ahead Logging (WAL) that protect your data against machine failures. In high-concurrency environments, these mechanisms give you that peace of mind that nothing will disappear or end up out of order.
+
+## Community, compatibility, and adoption
+
+Finally, one factor you cannot ignore is the huge community and the project’s maturity. PostgreSQL has been around for decades, is open source, and has a massive contributor base. This means extensive documentation, frequent updates, and thousands of ready-to-use tools. Postgres’s SQL dialect is very close to the ANSI standard, so anyone who already knows SQL from other databases feels at home, and migrations between systems tend to be easier.
+
+Large companies and projects have also adopted Postgres, from startups to tech giants. It is common to hear that Netflix, Uber, Instagram, Spotify, and many others use PostgreSQL in critical systems. Cloud infrastructure keeps up as well, since virtually all providers offer a managed Postgres service like AWS RDS, Cloud SQL, Azure Database, and others, so you can spin up a robust database without hassle. All of this comes with no license cost, because it is free software. This ensures that Postgres keeps evolving and adapting to market demands, unlike proprietary solutions that can stagnate over time.
+
+## Conclusion: why give PostgreSQL a chance
+
+In short, PostgreSQL offers an amazing set of advanced features, combined with stability and an active community. It can handle everything from basic SQL queries to projects that need geolocation, real-time analysis, or semi-structured data. So if you are still using PostgreSQL only for simple CRUD, it is worth exploring beyond the trivial. The database hides some powerful surprises that can save a lot of application code and open the door to more robust systems. Who knows, after getting to know these features better, you might also join the team that cannot live without PostgreSQL anymore.
