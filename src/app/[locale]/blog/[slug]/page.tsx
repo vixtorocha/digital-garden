@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getLocale } from "next-intl/server";
 import { Metadata } from "next";
+import { serialize } from "next-mdx-remote/serialize";
 
 type Props = {
   readonly params: { readonly slug: string };
@@ -34,13 +35,14 @@ export default async function BlogPostPage({ params }: Props) {
     "utf-8",
   );
   const { data, content } = matter(markdownWithMeta);
+  const mdxSource = await serialize(content);
 
   return (
     <div>
       <h1 className="text-4xl font-bold mb-4">{data.title}</h1>
       <p className="text-gray-600 mb-8">{data.date}</p>
       <article className="mdx prose lg:prose-xl dark:prose-invert">
-        <MDXRemote source={content} />
+        <MDXRemote {...mdxSource} source={content} />
       </article>
     </div>
   );
