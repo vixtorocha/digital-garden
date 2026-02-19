@@ -14,5 +14,8 @@
     "about": "About me",
     "projects": "Projects",
     "contact": "Contact"
+  },
+  "footer": {
+    "text": "Made with ❤️ by João Victor Rocha"
   }
 }
