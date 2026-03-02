@@ -1,62 +1,62 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import Head from 'next/head'
-import Layout from '@/components/layout'
-import Header from '@/components/header'
-import localFont from 'next/font/local'
-import { NextIntlClientProvider } from 'next-intl'
-import React from 'react'
-import { notFound } from 'next/navigation'
-import { routing } from '@/i18n/routing'
-import { hasLocale } from 'use-intl'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
-import Footer from '@/components/Footer'
+import type { Metadata } from 'next';
+import './globals.css';
+import Head from 'next/head';
+import Layout from '@/components/layout';
+import Header from '@/components/header';
+import localFont from 'next/font/local';
+import { NextIntlClientProvider } from 'next-intl';
+import React from 'react';
+import { notFound } from 'next/navigation';
+import { routing } from '@/i18n/routing';
+import { hasLocale } from 'use-intl';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import Footer from '@/components/Footer';
 
 const poppins = localFont({
   src: [
     {
       path: '../../../public/fonts/Poppins-Regular.ttf',
       weight: '400',
-      style: 'normal'
+      style: 'normal',
     },
     {
       path: '../../../public/fonts/Poppins-Medium.ttf',
       weight: '500',
-      style: 'normal'
+      style: 'normal',
     },
     {
       path: '../../../public/fonts/Poppins-Bold.ttf',
       weight: '700',
-      style: 'normal'
-    }
-  ]
-})
+      style: 'normal',
+    },
+  ],
+});
 
 export const metadata: Metadata = {
   title: 'João Victor Rocha',
-  description: 'Engenheiro de Software | Desenvolvedor Full-Stack | Apaixonado por Tecnologia e Inovação'
-}
+  description: 'Engenheiro de Software | Desenvolvedor Full-Stack | Apaixonado por Tecnologia e Inovação',
+};
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
   children,
-  params
+  params,
 }: Readonly<{
-  children: React.ReactNode
-  params: Promise<{ locale: string }>
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
-  const { locale } = await params
+  const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
-    notFound()
+    notFound();
   }
 
   // Enable static rendering
-  setRequestLocale(locale)
+  setRequestLocale(locale);
 
-  const t = await getTranslations()
+  const t = await getTranslations();
 
   return (
     <html lang={locale} className={poppins.className}>
@@ -77,5 +77,5 @@ export default async function LocaleLayout({
         </div>
       </body>
     </html>
-  )
+  );
 }

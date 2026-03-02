@@ -1,6 +1,6 @@
-import React from "react";
-import NextLink from "next/link";
-import { isExternal } from "util/types";
+import React from 'react';
+import NextLink from 'next/link';
+import { isExternal } from 'util/types';
 
 type LinkProps = {
   children: React.ReactNode;
@@ -10,13 +10,13 @@ type LinkProps = {
 
 const Link = ({ children, href, className }: LinkProps) => {
   const link = href;
-  const baseClass = "text-yellow-500 hover:text-yellow-300 font-medium";
+  const baseClass = 'text-yellow-500 hover:text-yellow-300 font-medium';
   const combinedClass = className ? `${baseClass} ${className}` : baseClass;
 
   return (
     <span className={combinedClass}>
       {isExternal(link) ? (
-        <a href={link} target="_blank" rel="noreferrer">
+        <a href={link} target='_blank' rel='noreferrer'>
           {children}
         </a>
       ) : (
