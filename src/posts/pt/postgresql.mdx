@@ -1,6 +1,6 @@
 ---
-title: "Descobrindo o PostgreSQL: por que tantos desenvolvedores amam esse banco?"
-date: "2026-02-03"
+title: 'Descobrindo o PostgreSQL: por que tantos desenvolvedores amam esse banco?'
+date: '2026-02-03'
 ---
 
 Imagine que você já fez aquele CRUD básico de sempre no PostgreSQL: criar tabela, inserir dados, selecionar tudo com um `SELECT *`… Mas e agora? Como tirar o máximo de proveito do seu banco de dados e levar seu app para o próximo nível? O PostgreSQL pode ser um canivete suíço de recursos avançados.
@@ -13,7 +13,7 @@ Nesse artigo veremos como funcionalidades como Commom Table Expressions, índice
 Já se surpreendeu ao ver que uma query simples virou um quebra-cabeças? No PostgreSQL, você pode dividir a consulta em pedaços legíveis usando Common Table Expressions (CTEs).
 Quer um exemplo prático? Imagine uma loja online em que você precisa saber quais clientes venderam mais de R$10.000 em janeiro. Em vez de empilhar subselects confusos, dá para usar:
 
-```
+```sql
 WITH total_vendas AS (
   SELECT cliente_id, SUM(valor) AS total
   FROM pedidos
@@ -31,7 +31,7 @@ Esse `WITH` deixa a lógica mais clara: primeiro calculamos total_vendas por cli
 
 Outro ponto forte do SQL do Postgres é a flexibilidade com dados semiestruturados. Você pode guardar campos JSON diretamente na tabela usando o tipo JSONB e ainda assim consultar tudo naturalmente. Por exemplo, suponha que a tabela clientes tenha uma coluna info do tipo jsonb com detalhes como cidade ou preferências:
 
-```
+```sql
 SELECT info->>'nome' AS nome,
        info->'endereco'->>'cidade' AS cidade
 FROM clientes
@@ -45,7 +45,7 @@ Veja que usamos operadores ->> para extrair texto e -> para objetos JSON. Com í
 
 Você deve saber como um índice simples acelera buscas em CRUDs básicos, mas o Postgres vai muito além do índice B-tree padrão. Ele oferece tipos de índices especializados para cada necessidade: índice GIN (ótimo para textos, arrays e JSONB), GiST (ideal para dados geométricos, full-text search, etc.), BRIN (para tabelas muito grandes agrupadas por faixa de páginas) e até índices parciais para otimizar consultas comuns. Por exemplo, se a sua tabela produtos é imensa e você acessa só produtos ativos, dá para criar um índice parcial assim:
 
-```
+```sql
 CREATE INDEX idx_produtos_ativos ON produtos(id)
 WHERE ativo = true;
 ```
@@ -56,7 +56,7 @@ Assim, o índice é menor e otimizado para consultas frequentes, ganhando desemp
 
 Uma das maiores vantagens do PostgreSQL é sua extensibilidade. Com um simples CREATE EXTENSION, você habilita recursos impressionantes. Por exemplo, a famosa extensão [PostGIS](https://postgis.net/) adiciona suporte a dados geográficos. Se você precisa buscar lojas próximas de um cliente, basta usar tipos geométricos e funções nativas:
 
-```
+```sql
 SELECT nome_loja
 FROM lojas
 WHERE ST_DWithin(
@@ -76,7 +76,7 @@ CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
 
 Depois é só consultar, por exemplo:
 
-```
+```sql
 SELECT query, calls, total_time
 FROM pg_stat_statements
 ORDER BY total_time DESC
@@ -89,7 +89,7 @@ Assim você vê quais consultas estão consumindo mais tempo, ajudando a otimiza
 
 Além dos recursos acima, muita gente escolhe PostgreSQL pela confiabilidade em ambientes críticos. O Postgres sempre foi ACID por padrão: ele garante Atomicidade, Consistência, Isolamento e Durabilidade. Na prática, suas transações funcionam como um tudo ou nada. Por exemplo:
 
-```
+```sql
 BEGIN;
 UPDATE contas SET saldo = saldo - 100 WHERE id = 1;
 UPDATE contas SET saldo = saldo + 100 WHERE id = 2;

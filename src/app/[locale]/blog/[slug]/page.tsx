@@ -5,6 +5,8 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getLocale } from 'next-intl/server';
 import { Metadata } from 'next';
 import { serialize } from 'next-mdx-remote/serialize';
+import rehypeHighlight from 'rehype-highlight';
+import '@/styles/highlight-js/intellij-light.css';
 
 type Props = {
   readonly params: { readonly slug: string };
@@ -24,6 +26,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+const options = {
+  mdxOptions: {
+    remarkPlugins: [],
+    rehypePlugins: [rehypeHighlight],
+  },
+};
+
 export default async function BlogPostPage({ params }: Props) {
   const locale = await getLocale();
   const { slug } = await params;
@@ -36,7 +45,7 @@ export default async function BlogPostPage({ params }: Props) {
       <h1 className='text-4xl font-bold mb-4'>{data.title}</h1>
       <p className='text-gray-600 mb-8'>{data.date}</p>
       <article className='mdx prose lg:prose-xl dark:prose-invert'>
-        <MDXRemote {...mdxSource} source={content} />
+        <MDXRemote {...mdxSource} options={options} source={content} />
       </article>
     </div>
   );
