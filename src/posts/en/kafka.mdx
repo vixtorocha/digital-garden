@@ -1,6 +1,7 @@
 ---
-title: "When to choose Apache Kafka?"
-date: "2025-11-14"
+title: 'When to choose Apache Kafka?'
+date: '2025-11-14'
+description: 'Apache Kafka is a powerful messaging system that can handle high volumes of data in real time. But when should you choose Kafka over other messaging solutions? In this article, we will explore the advantages and disadvantages of Kafka, and provide guidance on when it is the right choice for your project.'
 ---
 
 Imagine the following scenario: you are an e-commerce developer handling thousands of orders per hour. That means orchestrating order events, payments, inventory updates, and notifications. **Messaging** truly shines in this kind of scenario, where many events arrive in real time and multiple systems need to process them asynchronously.
@@ -15,10 +16,10 @@ Messaging is a way for multiple systems to exchange information without one serv
 
 Messaging helps solve several common problems in modern systems:
 
-* **Decoupling services:** ensures that microservices communicate without creating tight coupling.
-* **Asynchronous task processing:** operations can run in the background without blocking the user.
-* **Distributing work across multiple consumers.**
-* **Improving system resilience:** if a service goes down, messages are retained and will be processed when it comes back up.
+- **Decoupling services:** ensures that microservices communicate without creating tight coupling.
+- **Asynchronous task processing:** operations can run in the background without blocking the user.
+- **Distributing work across multiple consumers.**
+- **Improving system resilience:** if a service goes down, messages are retained and will be processed when it comes back up.
 
 ## Apache Kafka
 
@@ -28,17 +29,17 @@ This is precisely where Kafka stands apart from most others. In many traditional
 
 ### Advantages
 
-* Handles a high volume of messages.
-* Real-time processing.
-* Fault tolerance and durability.
-* Data retention, making it ideal for multiple consumers.
+- Handles a high volume of messages.
+- Real-time processing.
+- Fault tolerance and durability.
+- Data retention, making it ideal for multiple consumers.
 
 ### Disadvantages
 
-* Overkill for low data volumes (less than 1,000 messages per second).
-* Configuration and operational complexity.
-* High maintenance and specialist costs.
-* Steep learning curve.
+- Overkill for low data volumes (less than 1,000 messages per second).
+- Configuration and operational complexity.
+- High maintenance and specialist costs.
+- Steep learning curve.
 
 For smaller workloads or simpler messaging patterns, tools like RabbitMQ or even cloud-based queues may be more practical.
 
