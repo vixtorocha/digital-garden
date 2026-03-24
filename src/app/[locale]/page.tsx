@@ -22,12 +22,15 @@ async function getPosts(locale: string): Promise<Post[]> {
   }
 
   const files = fs.readdirSync(postsPath);
-  return files.map((filename) => {
+  const posts = files.map((filename) => {
     const slug = filename.replace('.mdx', '');
     const markdownWithMeta = fs.readFileSync(path.join(postsPath, filename), 'utf-8');
     const { data } = matter(markdownWithMeta);
     return { slug, data: data as FrontMatter };
   });
+
+  // Sort posts by date in descending order (newest first)
+  return posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 }
 
 export default async function Home() {
