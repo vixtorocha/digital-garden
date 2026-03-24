@@ -20,9 +20,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const { data } = matter(markdownWithMeta);
 
+  const ogImageUrl = `/api/og?${new URLSearchParams({
+    title: data.title,
+    description: data.description || '',
+  }).toString()}`;
+
   return {
     title: data.title,
     description: data.description ?? undefined, // optional
+    openGraph: {
+      title: data.title,
+      description: data.description,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: data.title,
+        },
+      ],
+    },
   };
 }
 
