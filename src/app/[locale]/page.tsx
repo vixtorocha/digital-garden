@@ -47,7 +47,7 @@ export default async function Home() {
             <a href={`/blog/${post.slug}`} className='hover:underline mb-2 block decoration-yellow-500 decoration-2'>
               <h2 className='text-xl mb-0 mt-0 font-semibold'>{post.data.title}</h2>
             </a>
-            <p className='text-gray-900 mb-2 text-base'>{post.data.description}</p>
+            <p className='mb-2 text-base'>{post.data.description}</p>
             <a href={`/blog/${post.slug}`} className='font-medium hover:underline decoration-yellow-500 decoration-2'>
               {t('readMore')} -&gt;
             </a>

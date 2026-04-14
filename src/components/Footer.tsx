@@ -1,8 +1,9 @@
-type FooterProps = {
-  t: (key: string) => string
-}
+'use client';
 
-const Footer = ({ t }: FooterProps) => {
-  return <div className='text-center mt-30 mb-5'>{t('footer.text')}</div>
-}
-export default Footer
+import { useTranslations } from 'next-intl';
+
+const Footer = () => {
+  const t = useTranslations();
+  return <div className='text-center mt-30 mb-5'>{t('footer.text')}</div>;
+};
+export default Footer;

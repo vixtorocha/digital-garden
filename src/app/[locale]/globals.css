@@ -1,26 +1,28 @@
-@import "../../../node_modules/tailwindcss";
+@import '../../../node_modules/tailwindcss';
+
+@variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
-    @apply bg-white text-gray-800 text-lg;
+    @apply bg-white text-gray-800 text-lg dark:bg-gray-900 dark:text-gray-100;
   }
   ::selection {
     @apply bg-yellow-500 text-white;
   }
   h1 {
-    @apply text-xl font-bold;
+    @apply text-xl font-bold dark:text-gray-100;
   }
   .mdx h2 {
-    @apply text-2xl font-medium mb-5 mt-9 text-yellow-500;
+    @apply text-2xl font-medium mb-5 mt-9 text-yellow-500 dark:text-yellow-400;
   }
   h3 {
-    @apply text-lg font-semibold mb-4;
+    @apply text-lg font-semibold mb-4 dark:text-gray-200;
   }
   p {
-    @apply mb-4 leading-relaxed;
+    @apply mb-4 leading-relaxed text-gray-900 dark:text-gray-300;
   }
   li {
-    @apply mb-2 list-disc list-inside;
+    @apply mb-2 list-disc list-inside dark:text-gray-300;
   }
   ul {
     @apply mb-4 pl-5;

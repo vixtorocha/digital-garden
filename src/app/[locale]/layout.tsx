@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import Head from 'next/head';
 import Layout from '@/components/layout';
 import Header from '@/components/header';
 import localFont from 'next/font/local';
@@ -9,7 +8,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { hasLocale } from 'use-intl';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import Footer from '@/components/Footer';
 
 const poppins = localFont({
@@ -56,22 +55,32 @@ export default async function LocaleLayout({
   // Enable static rendering
   setRequestLocale(locale);
 
-  const t = await getTranslations();
-
   return (
     <html lang={locale} className={poppins.className}>
+      <head>
+        <meta charSet='utf-8' />
+        <link href='/fonts/stylesheet.css' rel='stylesheet preload' as='style' />
+        <link rel='shortcut icon' type='image/png' href='/favicon.png' />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              const theme = localStorage.getItem('theme');
+              const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              const isDark = theme ? theme === 'dark' : prefersDark;
+              if (isDark) {
+                document.documentElement.classList.add('dark');
+              }
+            `,
+          }}
+        />
+      </head>
       <body>
         <div>
-          <Head>
-            <meta charSet='utf-8' />
-            <link href='/fonts/stylesheet.css' rel='stylesheet preload' as='style' />
-            <link rel='shortcut icon' type='image/png' href='/favicon.png' />
-          </Head>
           <NextIntlClientProvider>
             <Layout>
-              <Header t={t} />
+              <Header />
               <main className='grow'>{children}</main>
-              <Footer t={t} />
+              <Footer />
             </Layout>
           </NextIntlClientProvider>
         </div>

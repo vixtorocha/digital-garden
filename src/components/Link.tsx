@@ -1,6 +1,6 @@
 import React from 'react';
 import NextLink from 'next/link';
-import { isExternal } from 'util/types';
+import { isExternal } from '@/utils';
 
 type LinkProps = {
   children: React.ReactNode;
