@@ -14,7 +14,7 @@ export function ThemeSwitcher() {
     const shouldBeDark = savedTheme ? savedTheme === 'dark' : prefersDark;
 
     setIsDark(shouldBeDark);
-    applyTheme(shouldBeDark); // ✅ called once with the correct value
+    applyTheme(shouldBeDark);
   }, []);
 
   const applyTheme = (dark: boolean) => {
@@ -24,7 +24,7 @@ export function ThemeSwitcher() {
   const toggleTheme = () => {
     const newIsDark = !isDark;
     setIsDark(newIsDark);
-    applyTheme(newIsDark); // ✅ apply immediately
+    applyTheme(newIsDark);
     localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
   };
 

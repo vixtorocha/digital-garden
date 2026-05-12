@@ -1,0 +1,74 @@
+---
+title: 'Cache e Redis: por que e como usar'
+date: '2026-05-12'
+description: 'Cache e Redis são ferramentas poderosas para melhorar o desempenho de aplicações. Neste artigo, vamos explorar por que e como usar o Redis para caching.'
+---
+
+Imagina que sua aplicação faz milhares de consultas ao mesmo banco de dados. Todo esse tráfego gera latência, carga na CPU, carga no disco, e aumenta custos. Em cenários assim entra o **cache**: uma camada de memória (RAM) ultra-rápida que armazena resultados recentes para evitar consultas repetidas ao banco.
+
+Em vez de ler do disco (que pode demorar dezenas ou centenas de milissegundos), o cache responde em microssegundos. Na prática, usando cache a aplicação faz _muito mais_ trabalho “barato” na memória e pouquíssimas operações caras no banco.
+
+Por exemplo, imagine um site de jogos com 1 milhão de visitas por segundo exibindo resultados. Se não houvesse cache, seriam 1 milhão de SELECTs no SQL. Com Redis configurado com TTL curto (por ex. 3s), o Redis atenderia cerca de 60 milhões de consultas por minuto e apenas ~30 consultas SQL seriam executadas, resultando em uma redução drástica de carga. Ou seja, com cache você passa de “1.000.000 de operações caras” para “1 operação cara + 999.999 acessos baratinhos na RAM”.
+
+O Redis é uma das ferramentas mais comuns para caching. Ele armazena dados em **memória RAM** pura, provendo resposta em latências de nanossegundos.
+
+> Diversos benchmarks mostram que uma consulta típica no banco relacional demora na faixa de 50–200 ms, enquanto a mesma operação no Redis leva **< 1 ms**. Em situações reais, MySQL geralmente aguenta 500–1.000 consultas por segundo, mas um servidor Redis pode passar de 100.000 operações por segundo na mesma máquina. Consultas com múltiplos joins que levavam ~120 ms caem para ~0,8 ms no Redis. No fim das contas, colocar cache reduz _muito_ a latência e aumenta em 10–50× (ou mais) o throughput do sistema. Por isso, “quase tudo na internet” se apóia em Redis ou semelhantes para cache.
+
+Além do ganho de velocidade, há também economia de custos. Como o Redis alivia a carga do banco de dados principal, muitas vezes você pode **postergar upgrades caros** de hardware. Em resumo: investir em RAM pode sair muito mais barato do que sobrecarregar CPUs e discos.
+
+## Como funciona o padrão Cache-Aside
+
+Uma das formas mais comuns de usar cache é o chamado _padrão Cache-Aside_ (ou _lazy-loading_). A lógica é simples e sob controle da aplicação: toda vez que precisar de dados, você **primeiro consulta o cache**. Se der _cache hit_ (achou), ótimo: retorna o valor imediatamente. Se der _cache miss_ (não encontrou), aí você vai ao banco de dados, obtém os dados “oficiais”, e então **grava esse resultado no cache** para as próximas leituras. Na prática:
+
+1. A aplicação tenta ler do cache (por exemplo, uma chave Redis).
+2. Se existir (_hit_), retorna o valor.
+3. Se não existir (_miss_), faz a consulta no banco de dados, obtém o resultado e armazena no cache para futuras consultas.
+
+Esse modelo é ideal quando os dados são lidos muito mais vezes do que escritos e quando toleramos **consistência eventual** (se o cache ficar “um pouco” defasado, não quebra tudo). As vantagens são claras: leitura rápida da memória em vez de acessar o disco, controle preciso do que vai para o cache, e muito menos pressão no banco de dados, tornando o sistema mais escalável e fácil de implementar.
+
+Por exemplo, no padrão cache-aside em Node.js você poderia fazer algo assim:
+
+```js
+import { createClient } from 'redis';
+const client = createClient();
+await client.connect();
+
+async function getUsuario(id) {
+  const cacheKey = `user:${id}`;
+  const cacheResult = await client.get(cacheKey);
+
+  if (cacheResult) {
+    console.log('Cache hit');
+    return JSON.parse(cacheResult); // Retorna do cache
+  }
+  // Cache miss: busca no banco de dados
+  const usuario = await bancoDeDados.buscarUsuarioPorId(id);
+  // Armazena no Redis com TTL (exemplo: 1 hora = 3600s)
+  await client.set(cacheKey, JSON.stringify(usuario), { EX: 3600 });
+  console.log('Cache atualizado com resultado do BD');
+  return usuario;
+}
+```
+
+Essa lógica (checar o cache antes, depois banco, e então atualizar o cache) é exatamente o cache-aside em ação.
+
+Nesse exemplo em Python, o argumento `EX: 3600` no `set` indica que a chave deve expirar em 1 hora. Essa é uma forma de **invalidar automaticamente** dados antigos: após o tempo de vida (`TTL`), o Redis apaga a chave. Assim, não precisamos deletar manualmente cada vez pois o próprio Redis limpa as chaves expiradas.
+
+Usar TTL funciona bem quando você pode tolerar que a informação fique obsoleta por um curto período. É um compromisso entre performance e consistência.
+
+## Invalidação de cache e cuidados
+
+Um ponto importante é a **invalidação do cache**. Como garantir que o cache reflita mudanças feitas no banco de dados? Se você só usar TTL, ficará exibindo o valor antigo até o tempo expirar. Uma estratégia comum é **invalidar explicitamente** o cache sempre que faz uma escrita no banco. Por exemplo:
+
+```js
+async function atualizaUsuario(id, novoDado) {
+  await atualizaBd(id, novoDado); // Atualiza no banco
+  await redisClient.del(`user:profile:${id}`); // Invalida chave correspondente no cache
+}
+```
+
+Assim, no próximo `getUsuario(id)`, o cache-**miss** será disparado e você buscaria o valor atualizado no banco antes de re-popular o cache. Essa abordagem garante consistência imediata: você não corre o risco de servir dados obsoletos. É importante coordenar a escrita e a remoção do cache na mesma lógica da aplicação.
+
+## Considerações finais
+
+Usar Redis como cache pode revolucionar a performance das suas aplicações. Em testes reais, é possível notar latências de várias dezenas de milissegundos reduzirem para microssegundos, e o throughput dar um salto de 10–50× ou mais. Em sistemas de alto tráfego (como e-commerces, APIs REST, etc.), reduzir a carga no banco de dados é essencial para escalar sem custos astronômicos. Lembre-se apenas: planeje bem seu padrão de cache (como o cache-aside), use `EXPIRE` para evitar dados obsoletos, e invalide manualmente nos pontos de escrita. Feito isso, você terá um sistema muito mais ágil e menos dependente de leituras pesadas no banco principal.

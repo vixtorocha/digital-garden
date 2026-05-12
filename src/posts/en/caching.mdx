@@ -1,0 +1,74 @@
+---
+title: 'Cache and Redis: Why and How to Use'
+date: '2026-05-12'
+description: 'Cache and Redis are powerful tools to improve application performance. In this article, we will explore why and how to use Redis for caching.'
+---
+
+Imagine your application makes thousands of queries to the same database. All this traffic generates latency, CPU load, disk load, and increases costs. In such scenarios, **cache** comes in: an ultra-fast memory (RAM) layer that stores recent results to avoid repeated database queries.
+
+Instead of reading from disk (which can take tens or hundreds of milliseconds), the cache responds in microseconds. In practice, using cache allows the application to do _much more_ "cheap" work in memory and very few expensive operations on the database.
+
+For example, imagine a gaming site with 1 million visits per second displaying results. Without cache, that would be 1 million SELECTs on SQL. With Redis configured with a short TTL (e.g., 3s), Redis would handle about 60 million queries per minute and only ~30 SQL queries would be executed, resulting in a drastic reduction in load. In other words, with cache you go from "1,000,000 expensive operations" to "1 expensive operation + 999,999 cheap RAM accesses".
+
+Redis is one of the most common tools for caching. It stores data in **pure RAM memory**, providing responses at nanosecond latencies.
+
+> Various benchmarks show that a typical database query takes in the range of 50–200 ms, while the same operation on Redis takes **< 1 ms**. In real situations, MySQL typically handles 500–1,000 queries per second, but a Redis server can exceed 100,000 operations per second on the same machine. Queries with multiple joins that took ~120 ms drop to ~0.8 ms on Redis. In the end, adding cache _drastically_ reduces latency and increases system throughput by 10–50× (or more). That's why "almost everything on the internet" relies on Redis or similar for caching.
+
+Beyond the speed gain, there's also cost savings. Since Redis relieves the load on the main database, often you can **postpone expensive** hardware upgrades. In summary: investing in RAM can be much cheaper than overloading CPUs and disks.
+
+## How the Cache-Aside Pattern Works
+
+One of the most common ways to use cache is the so-called _Cache-Aside_ pattern (or _lazy-loading_). The logic is simple and under application control: every time you need data, you **first check the cache**. If you get a _cache hit_ (found it), great: return the value immediately. If you get a _cache miss_ (not found), then you go to the database, get the "official" data, and then **store that result in the cache** for future reads. In practice:
+
+1. The application tries to read from cache (for example, a Redis key).
+2. If it exists (_hit_), return the value.
+3. If it doesn't exist (_miss_), query the database, get the result, and store it in the cache for future queries.
+
+This model is ideal when data is read much more often than written and when we tolerate **eventual consistency** (if the cache gets slightly outdated, it doesn't break everything). The advantages are clear: fast memory reads instead of disk access, precise control over what goes into the cache, and much less pressure on the database, making the system more scalable and easier to implement.
+
+For example, in the cache-aside pattern in Node.js you could do something like this:
+
+```js
+import { createClient } from 'redis';
+const client = createClient();
+await client.connect();
+
+async function getUser(id) {
+  const cacheKey = `user:${id}`;
+  const cacheResult = await client.get(cacheKey);
+
+  if (cacheResult) {
+    console.log('Cache hit');
+    return JSON.parse(cacheResult); // Returns from cache
+  }
+  // Cache miss: fetch from database
+  const user = await database.fetchUserById(id);
+  // Store in Redis with TTL (example: 1 hour = 3600s)
+  await client.set(cacheKey, JSON.stringify(user), { EX: 3600 });
+  console.log('Cache updated with database result');
+  return user;
+}
+```
+
+This logic (check cache first, then database, and then update cache) is exactly cache-aside in action.
+
+In this Python example, the `EX: 3600` argument in `set` indicates that the key should expire in 1 hour. This is a way to **automatically invalidate** old data: after the time-to-live (`TTL`), Redis deletes the key. So we don't need to manually delete each time since Redis itself cleans up expired keys.
+
+Using TTL works well when you can tolerate the information becoming outdated for a short period. It's a trade-off between performance and consistency.
+
+## Cache Invalidation and Considerations
+
+An important point is **cache invalidation**. How do you ensure the cache reflects changes made to the database? If you only use TTL, you'll display the old value until the time expires. A common strategy is to **explicitly invalidate** the cache whenever you write to the database. For example:
+
+```js
+async function updateUser(id, newData) {
+  await updateDatabase(id, newData); // Updates database
+  await redisClient.del(`user:profile:${id}`); // Invalidates corresponding cache key
+}
+```
+
+That way, on the next `getUser(id)`, the cache **miss** will be triggered and you would fetch the updated value from the database before re-populating the cache. This approach ensures immediate consistency: you don't risk serving stale data. It's important to coordinate the database write and cache removal in the same application logic.
+
+## Final Considerations
+
+Using Redis as cache can revolutionize your applications' performance. In real tests, it's possible to notice latencies of dozens of milliseconds reduce to microseconds, and throughput jump by 10–50× or more. In high-traffic systems (like e-commerce, REST APIs, etc.), reducing database load is essential to scale without astronomical costs. Just remember: plan your cache pattern well (like cache-aside), use `EXPIRE` to prevent stale data, and manually invalidate at write points. With that done, you'll have a much more agile system with less dependence on heavy reads from the main database.
