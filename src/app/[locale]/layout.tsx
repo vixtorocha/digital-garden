@@ -61,6 +61,14 @@ export default async function LocaleLayout({
         <meta charSet='utf-8' />
         <link href='/fonts/stylesheet.css' rel='stylesheet preload' as='style' />
         <link rel='shortcut icon' type='image/png' href='/favicon.png' />
+        <link rel='alternate' type='application/atom+xml' title='Atom Feed (English)' href='/feed-en.xml' />
+        <link
+          rel='alternate'
+          type='application/atom+xml'
+          title='Atom Feed (Português)'
+          href='/feed-pt.xml'
+          hrefLang='pt'
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

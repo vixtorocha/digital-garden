@@ -1,12 +1,13 @@
 {
   "name": "digital-garden",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "npm run generate-feed && next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-feed": "tsx scripts/generate-feed.ts"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -16,7 +17,10 @@
     "@tabler/icons-react": "^3.41.1",
     "@types/mdx": "^2.0.13",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^17.4.2",
+    "feed": "^5.2.1",
     "gray-matter": "^4.0.3",
+    "marked": "^18.0.3",
     "next": "^16.1.6",
     "next-intl": "^4.7.0",
     "next-mdx-remote": "^6.0.0",
@@ -35,6 +39,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.2",
     "tailwindcss": "^4.1.13",
+    "tsx": "^4.22.0",
     "typescript": "^5"
   },
   "overrides": {
