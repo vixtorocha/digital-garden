@@ -1,0 +1,69 @@
+---
+title: 'What is a WebSocket and How to Use It'
+date: '2026-06-10'
+description: 'WebSocket is a communication protocol that provides a continuous, two-way connection between a client and a server.'
+---
+
+You are tired of coding HTTP requests, but still don't know what a WebSocket is? This article is for you.
+
+## What are WebSockets?
+
+A **WebSocket** is a communication protocol that provides a continuous, two-way connection between a client and a server
+
+Unlike standard HTTP, which requires the client to request data every time, WebSockets establish an open connection, allowing both the client and server to push messages instantly
+
+- **HTTP:** The client sends a request to the server and waits for a response. Once fulfilled, the connection then closes. To get new updates, the client must repeatedly send new requests (Polling), which causes latency and high network overhead.
+- **WebSocket:** The connection is established once through an HTTP handshake. Both sides "stay on the line" and can send data or updates to each other at any time, over a single and persistent TCP connection.
+
+## Common Use Cases
+
+Because of their speed and low latency, WebSockets are mainly used for applications that require real-time updates:
+
+- **Live Chat Apps**
+- **Leaderboards**
+- **Collaborative Tools**
+- **Sports score websites**
+
+## Implementation
+
+First, you must open a connection:
+
+```node.js
+const { WebSocketServer } = require('ws');
+
+// Initialize the WebSocket server
+const wss = new WebSocketServer({ port: 8080 });
+
+console.log('WebSocket server is running on ws://localhost:8080');
+```
+
+Then, you can listen to events or send them:
+
+```node.js
+wss.on('connection', (ws) => {
+  console.log('New client connected!');
+
+  // Handle incoming messages from this client
+  ws.on('message', (message) => {
+    console.log(`Received: ${message}`);
+
+    // Broadcast the message to all connected clients
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === client.OPEN) {
+        client.send(`Server broadcast: ${message}`);
+      }
+    });
+  });
+
+  // Handle client disconnection
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+
+  // Handle connection errors
+  ws.on('error', (error) => {
+    console.error(`Socket error: ${error.message}`);
+  });
+});
+
+```

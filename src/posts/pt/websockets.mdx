@@ -1,0 +1,68 @@
+---
+title: 'O que é um WebSocket e Como Usar'
+date: '2026-06-10'
+description: 'WebSocket é um protocolo de comunicação que fornece uma conexão contínua e bidirecional entre cliente e servidor.'
+---
+
+Você está cansado de escrever requisições HTTP, mas ainda não sabe o que é um WebSocket? Este artigo é para você.
+
+## O que são WebSockets?
+
+Um **WebSocket** é um protocolo de comunicação que fornece uma conexão contínua e bidirecional entre cliente e servidor.
+
+Ao contrário do HTTP tradicional, que exige que o cliente solicite dados sempre que precisa, os WebSockets estabelecem uma conexão aberta, permitindo que tanto o cliente quanto o servidor enviem mensagens instantaneamente.
+
+- **HTTP:** o cliente envia uma requisição ao servidor e aguarda uma resposta. Depois de concluída, a conexão é fechada. Para obter novas atualizações, o cliente precisa enviar novas requisições repetidamente (polling), o que causa latência e maior uso de rede.
+- **WebSocket:** a conexão é estabelecida uma vez através de um handshake HTTP. Ambos os lados "ficam na linha" e podem enviar dados ou atualizações a qualquer momento, usando uma única conexão TCP persistente.
+
+## Casos de Uso Comuns
+
+Devido à sua velocidade e baixa latência, os WebSockets são usados principalmente em aplicações que exigem atualizações em tempo real:
+
+- **Aplicativos de chat ao vivo**
+- **Placar de jogos**
+- **Ferramentas colaborativas**
+- **Sites de placar de futebol**
+
+## Implementação
+
+Primeiro, você precisa abrir uma conexão:
+
+```node.js
+const { WebSocketServer } = require('ws');
+
+// Inicializa o servidor WebSocket
+const wss = new WebSocketServer({ port: 8080 });
+
+console.log('Servidor WebSocket rodando em ws://localhost:8080');
+```
+
+Então, você pode escutar eventos ou enviar mensagens:
+
+```node.js
+wss.on('connection', (ws) => {
+  console.log('Novo cliente conectado!');
+
+  // Trata mensagens recebidas deste cliente
+  ws.on('message', (message) => {
+    console.log(`Recebido: ${message}`);
+
+    // Envia a mensagem para todos os clientes conectados
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === client.OPEN) {
+        client.send(`Broadcast do servidor: ${message}`);
+      }
+    });
+  });
+
+  // Trata desconexão do cliente
+  ws.on('close', () => {
+    console.log('Cliente desconectado');
+  });
+
+  // Trata erros de conexão
+  ws.on('error', (error) => {
+    console.error(`Erro no socket: ${error.message}`);
+  });
+});
+```
